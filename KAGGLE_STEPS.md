@@ -12,16 +12,18 @@ Create a new Kaggle Notebook. Make sure **Internet is ON** in your Kaggle Notebo
 !apt-get update && apt-get install -y ffmpeg
 ```
 
-### Cell 2: Install Python libraries
+### Cell 2: Setup Python 3.10 Environment & Install libraries
+Since Kaggle sometimes updates its default Python version, we will create a dedicated Python 3.10 environment to ensure compatibility with TTS.
 ```bash
 %cd /kaggle/working/ibani-tts
-!pip install -r requirements.txt
+!conda create -n tts_env python=3.10 -y
+!conda run -n tts_env pip install -r requirements.txt
 ```
 
 ### Cell 3: Run the Auto-Tuning Slicer
 This script will download your Ibani JSON and the MP3s from Cloudflare, and slice them into verses.
 ```bash
-!python kaggle_prep_script.py
+!conda run -n tts_env python kaggle_prep_script.py
 ```
 *(If it skips a chapter, that's completely normal! It just means the audio pauses were too messy, and skipping it keeps the training data clean.)*
 
@@ -38,13 +40,13 @@ Now that you have your `wavs` folder and `metadata.csv` ready, you can start tra
 ### Cell 5: Install Coqui TTS
 This takes a minute to download the deep learning packages.
 ```bash
-!pip install TTS
+!conda run -n tts_env pip install TTS
 ```
 
 ### Cell 6: Start Training!
 Run the training script we prepared. 
 ```bash
-!python train_tts.py
+!conda run -n tts_env python train_tts.py
 ```
 
 ### What happens next?
