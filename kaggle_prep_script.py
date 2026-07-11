@@ -70,31 +70,34 @@ for book_code, chapters in chapters_data.items():
                 print(f"  -> Failed to download. Skipping {book_code} Ch {ch_num}")
                 continue
                 
-        # 3. Slice Audio on Silence
-        print(f"Slicing {file_name} into verses...")
+        # 3. Slice Audio on Silence (Auto-tune to match verses length)
+        print(f"Slicing {file_name} into verses (Target: {len(verses)})...")
         try:
             audio = AudioSegment.from_mp3(save_path)
-            # You might need to tweak min_silence_len (in ms) and silence_thresh (in dBFS)
-            # based on how the narrator speaks. 
-            audio_chunks = split_on_silence(
-                audio, 
-                min_silence_len=1000, # 1 second of silence triggers a split
-                silence_thresh=-40    # Silence is anything quieter than -40dB
-            )
             
-            # Check if chunks roughly match verse count
-            if len(audio_chunks) == len(verses):
-                print(f"  -> Perfect match! {len(audio_chunks)} audio chunks for {len(verses)} verses.")
-            else:
-                print(f"  -> WARNING: Found {len(audio_chunks)} audio chunks but expected {len(verses)} verses. You may need to manually review this chapter.")
+            best_chunks = []
+            # We test different minimum silence lengths to find the perfect cut!
+            for min_silence in range(1200, 200, -50):
+                audio_chunks = split_on_silence(
+                    audio, 
+                    min_silence_len=min_silence,
+                    silence_thresh=audio.dBFS-16,
+                    keep_silence=250
+                )
+                
+                if len(audio_chunks) == len(verses):
+                    best_chunks = audio_chunks
+                    print(f"  -> Success! Perfect match found with {min_silence}ms silence detection.")
+                    break
             
+            if not best_chunks:
+                print(f"  -> WARNING: Found {len(audio_chunks)} audio chunks but expected {len(verses)} verses. Skipping this chapter to keep training data clean!")
+                continue
+                
             # 4. Save individual WAVs and build Metadata
-            # We map up to whichever is smaller (chunks or verses) to avoid errors
-            limit = min(len(audio_chunks), len(verses))
-            
-            for i in range(limit):
+            for i in range(len(verses)):
                 verse_obj = verses[i]
-                chunk = audio_chunks[i]
+                chunk = best_chunks[i]
                 
                 v_num = verse_obj.get("verse")
                 ibani_text = verse_obj.get("ibani_text", "").strip()
