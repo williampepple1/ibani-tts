@@ -17,7 +17,7 @@ Since Kaggle sometimes updates its default Python version, we will create a dedi
 ```bash
 %cd /kaggle/working/ibani-tts
 !pip install uv
-!uv venv --python 3.10 /kaggle/venv
+!uv venv --python 3.10 --seed /kaggle/venv
 !/kaggle/venv/bin/pip install -r requirements.txt
 ```
 
