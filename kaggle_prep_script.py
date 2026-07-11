@@ -17,13 +17,12 @@ os.makedirs(RAW_DIR, exist_ok=True)
 os.makedirs(WAV_DIR, exist_ok=True)
 
 book_index_map = {
-    "MAT": 40, "MRK": 41, "LUK": 42, "JHN": 43,
-    "ACT": 44, "ROM": 45, "1CO": 46, "2CO": 47,
-    "GAL": 48, "EPH": 49, "PHP": 50, "COL": 51,
-    "1TH": 52, "2TH": 53, "1TI": 54, "2TI": 55,
-    "TIT": 56, "PHM": 57, "HEB": 58, "JAS": 59,
-    "1PE": 60, "2PE": 61, "1JN": 62, "2JN": 63,
-    "3JN": 64, "JUD": 65, "REV": 66
+    "MAT": 1, "MRK": 2, "LUK": 3, "JHN": 4, "ACT": 5,
+    "ROM": 6, "1CO": 7, "2CO": 8, "GAL": 9, "EPH": 10,
+    "PHP": 11, "COL": 12, "1TH": 13, "2TH": 14, "1TI": 15,
+    "2TI": 16, "TIT": 17, "PHM": 18, "HEB": 19, "JAS": 20,
+    "1PE": 21, "2PE": 22, "1JN": 23, "2JN": 24, "3JN": 25,
+    "JUD": 26, "REV": 27
 }
 
 # 1. Download JSON
